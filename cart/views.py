@@ -13,17 +13,27 @@ def add_to_cart(request, id):
     
     quantity = int(request.POST.get('quantity'))
     """gets the int from the form we created in products.html"""
-
     cart = request.session.get('cart', {})
-    cart[id] = cart.get(id, quantity)
 
+    current_quantity = cart.get(id, 0)
+    """
+    set current_quantity to the value that's already in the cart if there. If not, current_quantity is set to 0.
+    .get() just looks at the cart, doesn't set it. If we don't - use the default value, in this case 0.
+    """
+
+    if current_quantity > 0:
+        cart[id] = current_quantity + quantity
+    else:
+        cart[id] = quantity
+    
     request.session['cart'] = cart
+
     return redirect(reverse('index'))
 
 
 """You can now add an item to the cart. 
 However, if you try adding the same item to the cart again, 
-you will overwrite the cart value. This behavior is not what the user wants.
+you will ## the cart value. This behavior is not what the user wants.
  Can you think how to modify the add_to_cart view to improve the user experience?"""
 
 """
